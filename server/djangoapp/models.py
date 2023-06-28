@@ -9,8 +9,8 @@ from django.utils.timezone import now
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    Name = models.CharField(null=False, max_length=30, default='name')
-    Description = models.CharField(max_length=1000)
+    name = models.CharField(null=False, max_length=100, default='name')
+    description = models.CharField(max_length=1000)
 
     def __str__(self):
         return "Name: " + self.name + "," + \
@@ -32,18 +32,17 @@ class CarModel(models.Model):
     ("Wagon", "Wagon")
     ]
 
-    Make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
-    DealerID = models.IntegerField(default=0)
-    Name = models.CharField(null=False, max_length=30, default='name')
-    Type = models.CharField(null=False, choices=Car_Types, max_length=30, default='name')
-    Year = models.DateField(null=True)
+    make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    dealerID = models.IntegerField(default=0)
+    name = models.CharField(null=False, max_length=100, default='name')
+    type = models.CharField(null=False, choices=Car_Types, max_length=100, default='name')
+    year = models.DateField(null=True)
 
     def __str__(self):
-        return  "Make: " + self.Make + "," + \
-                "DealerID: " + self.DealerID + "," + \
-                "Name: " + self.Name + "," + \
-                "Type: " + self.Type + "," + \
-                "Year: " + self.Year 
+        return  "Make: " + self.make + "," + \
+                "DealerID: " + self.dealerID + "," + \
+                "Name: " + self.name + "," + \
+                "Type: " + self.type
                    
 
                 
