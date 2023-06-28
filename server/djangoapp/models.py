@@ -13,7 +13,7 @@ class CarMake(models.Model):
     description = models.CharField(max_length=1000)
 
     def __str__(self):
-        return "Name: " + self.name + "," + \
+        return "Name: " + self.name + ", " + \
                "Description: " + self.description
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
@@ -39,12 +39,10 @@ class CarModel(models.Model):
     year = models.DateField(null=True)
 
     def __str__(self):
-        return  "Make: " + self.make + "," + \
-                "DealerID: " + self.dealerID + "," + \
-                "Name: " + self.name + "," + \
-                "Type: " + self.type
-                   
-
+        return  format(self.name) + ", " + \
+                "Make: " + format(self.make.name) + ", " + \
+                "Type: " + format(self.type)+ ", " + \
+                "DealerID: " + format(self.dealerID)
                 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
