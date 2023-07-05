@@ -13,10 +13,7 @@ import json
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-
 # Create your views here.
-
-
 # Create an `about` view to render a static about page
 def about(request):
     context = {}
@@ -91,8 +88,9 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/9b847f85-8d2c-4c38-b7da-90f7bfbcfff6/dealership-package/get-reviews"
+        
         # Get dealers reviews from the URL
-        reviews = get_dealer_reviews_from_cf (url,dealer_id)
+        reviews = get_dealer_reviews_from_cf(url, id=dealer_id)
         # Concat all dealer's reviews
         dealer_reviews = ' '.join([reviews for reviews in reviews])
         # Return a list of dealer short name
@@ -101,4 +99,3 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
-
