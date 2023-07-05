@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 
@@ -9,17 +9,34 @@ from requests.auth import HTTPBasicAuth
 #                                     auth=HTTPBasicAuth('apikey', api_key))
 def get_request(url, **kwargs):
     print(kwargs)
-    print("GET from {} ".format(url))
-    try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+    #print("GET from {} ".format(url))
+    if auth:    
+        try:
+            # Call get method of requests library with URL and parameters
+            
+            params = dict()
+            params["text"] = kwargs["text"]
+            params["version"] = kwargs["version"]
+            params["features"] = kwargs["features"]
+            params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+            response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+                                    auth=HTTPBasicAuth('apikey', api_key))
+        except:
+            # If any error occurs
+            print("Network exception occurred")
+            status_code = response.status_code
+            print("With status {} ".format(status_code))
+            json_data = json.loads(response.text)
+    else:
+        try:    
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
-    except:
-        # If any error occurs
-        print("Network exception occurred")
-    status_code = response.status_code
-    print("With status {} ".format(status_code))
-    json_data = json.loads(response.text)
+        except:
+            # If any error occurs
+            print("Network exception occurred")
+            status_code = response.status_code
+            print("With status {} ".format(status_code))
+            json_data = json.loads(response.text)
     return json_data
 
 # Create a `post_request` to make HTTP POST requests
@@ -57,7 +74,7 @@ def get_dealer_reviews_from_cf (url, **kwargs):
     results = []
     
     dealerID = kwargs['id']
-    print("Kwargs: ",dealerID)
+    #print("Kwargs: ",dealerID)
     # Call get_request with a URL parameter
     json_result = get_request(url, id=dealerID)
     if json_result:
@@ -66,12 +83,28 @@ def get_dealer_reviews_from_cf (url, **kwargs):
         #print('json: ',json_result)
         # For each dealer object
         for dealer in dealers:
-            # Extract reviews
-            reviews = dealer["review"]
-            results.append(reviews)
+            review_obj = DealerReview
+            
+            review_obj.dealership = dealer["dealership"]
+            review_obj.name = dealer["name"]
+            review_obj.purchase_date = dealer["purchase_date"]
+            review_obj.car_make = dealer["car_make"]
+            review_obj.car_model = dealer["car_model"]
+            review_obj.review = dealer["review"]
+            review_obj.id = dealer["id"]
+            #review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            results.append(review_obj)
+   
     return results
 #    return "results"
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
+def analyze_review_sentiments(text):
+    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/fb0cdda6-2ac5-44b3-95ab-77d1f45726de"
+    apikey = "4Jir1a02JZgo2Ub94zppUMojIKVz9GuIV-A0LXlH3yKo"
+    
+    json_result = get_request(url, text=dealerID, api_key=apikey)
+
+    print(json_result)
+    return "response"
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
