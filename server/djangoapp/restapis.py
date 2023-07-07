@@ -93,7 +93,7 @@ def get_dealer_reviews_from_cf (url, **kwargs):
 def analyze_review_sentiments(text):
     url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/cf644e81-0df7-48c2-823c-1cec40dba2bc" 
 
-    api_key = "tzVKMIjwvWurBJJg9rpVxSIREqKoFTnLptOLj1_SBQ1v" 
+    api_key = "" 
 
     authenticator = IAMAuthenticator(api_key) 
 
