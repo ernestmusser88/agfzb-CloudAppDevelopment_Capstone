@@ -32,7 +32,7 @@ def get_request(url, **kwargs):
         print("Network exception occurred")
 
     status_code = response.status_code
-    print("With status {} ".format(status_code))    
+    # print("With status {} ".format(status_code))    
     json_data = json.loads(response.text)
     return json_data
 
@@ -93,7 +93,7 @@ def get_dealer_reviews_from_cf (url, **kwargs):
 def analyze_review_sentiments(text):
     url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/e12e743f-a139-4c0e-afad-59c67352415c" 
 
-    api_key = "" 
+    api_key = "CJWWRgCDiVWe2OKHDuhBUCRX-N-sXRPZ9CI7EYuXAUlM" 
 
     authenticator = IAMAuthenticator(api_key) 
 
