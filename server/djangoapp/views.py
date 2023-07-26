@@ -77,7 +77,7 @@ def get_dealerships(request):
     if request.method == "GET":
         context = {}
         
-        url = "https://us-south.functions.appdomain.cloud/api/v1/web/9b847f85-8d2c-4c38-b7da-90f7bfbcfff6/dealership-package/get-dealership"
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/668214a5-5a2a-4165-8aef-70de2097ee05/default/Get_Dealerships"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
@@ -91,7 +91,7 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
-        url = "https://us-south.functions.appdomain.cloud/api/v1/web/9b847f85-8d2c-4c38-b7da-90f7bfbcfff6/dealership-package/get-reviews"
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/668214a5-5a2a-4165-8aef-70de2097ee05/default/Get_Reviews"
         
         # Get dealers reviews from the URL
         reviews = get_dealer_reviews_from_cf(url, id=dealer_id)
@@ -107,7 +107,7 @@ def add_review(request, dealer_id):
 
     #if request.user.is_authenticated():    
         
-    url = "https://us-south.functions.appdomain.cloud/api/v1/web/9b847f85-8d2c-4c38-b7da-90f7bfbcfff6/dealership-package/post-reviews"
+    url = "https://us-south.functions.appdomain.cloud/api/v1/web/668214a5-5a2a-4165-8aef-70de2097ee05/default/Post_Review"
 
     review["time"] = datetime.utcnow().isoformat()
     review["dealership"] = 11
