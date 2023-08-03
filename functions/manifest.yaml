@@ -1,0 +1,15 @@
+packages:
+
+  dealership: #write your package name in place of "dealership"
+
+    version: 1.0
+
+    license: Apache-2.0
+
+    actions: 
+
+      getDealership: #write your action name in place of "dealership"
+
+        function: get-dealership.js
+
+        web: true
