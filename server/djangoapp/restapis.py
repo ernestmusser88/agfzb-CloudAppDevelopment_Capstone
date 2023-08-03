@@ -115,7 +115,7 @@ def analyze_review_sentiments(text):
     label=json.dumps(response, indent=2) 
 
     label = response['sentiment']['document']['label'] 
-    print('Label: ', label)
+    #print('Label: ', label)
     return(label) 
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
