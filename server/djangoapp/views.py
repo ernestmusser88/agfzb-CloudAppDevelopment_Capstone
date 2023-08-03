@@ -91,13 +91,16 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
+        context = {}
+
         url = "https://us-east.functions.appdomain.cloud/api/v1/web/534db75c-8c0c-446b-9d45-b9d112b32bb4/dealership/get-review"
-        
         # Get dealers reviews from the URL
         reviews = get_dealer_reviews_from_cf(url, id=dealer_id)
         # Concat all dealer's reviews
         dealer_reviews = ' '.join(['User Review: '+review_obj.review +' Sentiment: '+review_obj.sentiment for review_obj in reviews])
+        context['reviews'] = dealer_reviews
         # Return a list of dealer short name
+        #return render(request, 'djangoapp/dealer_details.html', context)
         return HttpResponse(dealer_reviews)
 
 # Create a `add_review` view to submit a review
@@ -110,8 +113,8 @@ def add_review(request, dealer_id):
     url = "https://us-east.functions.appdomain.cloud/api/v1/web/534db75c-8c0c-446b-9d45-b9d112b32bb4/dealership/post-review"
 
     review["time"] = datetime.utcnow().isoformat()
-    review["dealership"] = 11
-    review["review"] = "This is a great car dealer"
+    review["dealership"] = 1
+    review["review"] = "This is a wonderful car dealer"
     json_payload["review"] = review
         
     response = post_request(url, json_payload)

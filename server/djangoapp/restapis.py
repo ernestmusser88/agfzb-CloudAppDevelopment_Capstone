@@ -77,15 +77,23 @@ def get_dealer_reviews_from_cf (url, **kwargs):
     if json_result:
         # Get the row list in JSON as dealers
         dealers=json_result
-        #print('json: ',json_result)
+        print('json: ',dealers)
         # For each dealer object
         for dealer in dealers:
-            review_obj = DealerReview(dealership = dealer["dealership"], name = dealer["name"], purchase_date = dealer["purchase_date"],
-                                      car_make = dealer["car_make"], car_model = dealer["car_model"], review = dealer["review"],
-                                      sentiment = "", purchase = dealer["purchase"],
-                                      id = dealer["id"])
-
-            review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            
+            if dealer["purchase"] == True:
+                review_obj = DealerReview(dealership = dealer["dealership"], name = dealer["name"], purchase_date = dealer["purchase_date"],
+                          car_make = dealer["car_make"], car_model = dealer["car_model"], review = dealer["review"],
+                          sentiment = "", purchase = dealer["purchase"],
+                          id = dealer["id"])
+                review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            elif dealer["purchase"] == False:
+                review_obj = DealerReview(dealership = dealer["dealership"], name = dealer["name"], purchase_date = "No Purchase",
+                          car_make = "N/A", car_model = "N/A", review = dealer["review"],
+                          sentiment = "", purchase = dealer["purchase"],
+                          id = dealer["id"])
+                review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            
             results.append(review_obj)
    
     return results
