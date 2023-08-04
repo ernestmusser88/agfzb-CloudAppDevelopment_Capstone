@@ -92,9 +92,9 @@ def get_dealer_reviews_from_cf (url, **kwargs):
             review_obj = DealerReview(dealership = review_temp["dealership"], name = review_temp["name"], purchase_date = review_temp["purchase_date"],
                       car_make = review_temp["car_make"], car_model = review_temp["car_model"], review = review_temp["review"],
                       sentiment = "", purchase = review_temp["purchase"], id = review_temp["id"])
-            
+
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)
-            
+            print(review_obj.sentiment)
             results.append(review_obj)
 
     return results
@@ -118,7 +118,7 @@ def analyze_review_sentiments(text):
         label = response['sentiment']['document']['label'] 
     except Exception as err:
         print("Network exception occurred")
-        label = " "
+        label = "N/A"
        
     
     return(label) 
