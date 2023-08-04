@@ -110,8 +110,12 @@ def add_review(request, dealer_id):
     url = "https://us-east.functions.appdomain.cloud/api/v1/web/534db75c-8c0c-446b-9d45-b9d112b32bb4/dealership/post-review"
 
     review["time"] = datetime.utcnow().isoformat()
+    review["car_make"] = "Subaru"
+    review["car_model"] = "Impreza"
+    review["purchase_date"] = "02/16/2021"
+    review["name"] = "Steve"
     review["dealership"] = 1
-    review["review"] = "This is a wonderful car dealer"
+    review["review"] = "Lots of room for tools and Beef"
     json_payload["review"] = review
         
     response = post_request(url, json_payload)
