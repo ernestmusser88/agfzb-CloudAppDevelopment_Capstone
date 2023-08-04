@@ -69,7 +69,7 @@ def get_dealers_from_cf(url, **kwargs):
 # - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf (url, **kwargs):
     results = []
-    #Some reviews are missing data
+
     review_temp = { "_id": "","_rev": "1-","another": "","car_make": "","car_model": "",
                     "car_year": 0,"dealership": 0,"id": 0,"name": "", "purchase": False,
                     "purchase_date": "","review": ""}
@@ -87,14 +87,21 @@ def get_dealer_reviews_from_cf (url, **kwargs):
             this_review = review
             for key in this_review.keys():
                 review_temp[key] = this_review[key]
-            print(review_temp)
 
-        
-             
+            #Populate Model    
+            review_obj = DealerReview(dealership = review_temp["dealership"], name = review_temp["name"], purchase_date = review_temp["purchase_date"],
+                      car_make = review_temp["car_make"], car_model = review_temp["car_model"], review = review_temp["review"],
+                      sentiment = "", purchase = review_temp["purchase"], id = review_temp["id"])
+            
+            review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            
+            results.append(review_obj)
+
     return results
 #    return "results"
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 def analyze_review_sentiments(text):
+    label = []
     url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/cf644e81-0df7-48c2-823c-1cec40dba2bc" 
 
     api_key = os.environ['NLU_API_KEY'] 
@@ -104,13 +111,16 @@ def analyze_review_sentiments(text):
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator) 
     
     natural_language_understanding.set_service_url(url) 
-    
-    response = natural_language_understanding.analyze( text=text ,features=Features(sentiment=SentimentOptions(targets=[text]))).get_result() 
-    
-    label=json.dumps(response, indent=2) 
 
-    label = response['sentiment']['document']['label'] 
-    #print('Label: ', label)
+    try:
+        response = natural_language_understanding.analyze( text=text ,features=Features(sentiment=SentimentOptions(targets=[text]))).get_result() 
+        label=json.dumps(response, indent=2)
+        label = response['sentiment']['document']['label'] 
+    except Exception as err:
+        print("Network exception occurred")
+        label = " "
+       
+    
     return(label) 
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
