@@ -69,33 +69,28 @@ def get_dealers_from_cf(url, **kwargs):
 # - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf (url, **kwargs):
     results = []
-    
+    #Some reviews are missing data
+    review_temp = { "_id": "","_rev": "1-","another": "","car_make": "","car_model": "",
+                    "car_year": 0,"dealership": 0,"id": 0,"name": "", "purchase": False,
+                    "purchase_date": "","review": ""}
+
     dealerID = kwargs['id']
     #print("Kwargs: ",dealerID)
     # Call get_request with a URL parameter
     json_result = get_request(url, id=dealerID)
     if json_result:
-        # Get the row list in JSON as dealers
-        dealers=json_result
-        print('json: ',dealers)
-        # For each dealer object
-        for dealer in dealers:
-            
-            if dealer["purchase"] == True:
-                review_obj = DealerReview(dealership = dealer["dealership"], name = dealer["name"], purchase_date = dealer["purchase_date"],
-                          car_make = dealer["car_make"], car_model = dealer["car_model"], review = dealer["review"],
-                          sentiment = "", purchase = dealer["purchase"],
-                          id = dealer["id"])
-                review_obj.sentiment = analyze_review_sentiments(review_obj.review)
-            elif dealer["purchase"] == False:
-                review_obj = DealerReview(dealership = dealer["dealership"], name = dealer["name"], purchase_date = "No Purchase",
-                          car_make = "N/A", car_model = "N/A", review = dealer["review"],
-                          sentiment = "", purchase = dealer["purchase"],
-                          id = dealer["id"])
-                review_obj.sentiment = analyze_review_sentiments(review_obj.review)
-            
-            results.append(review_obj)
-   
+
+        # Get the row list in JSON as reviews
+        reviews=json_result
+
+        for review in reviews:
+            this_review = review
+            for key in this_review.keys():
+                review_temp[key] = this_review[key]
+            print(review_temp)
+
+        
+             
     return results
 #    return "results"
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
@@ -103,15 +98,15 @@ def analyze_review_sentiments(text):
     url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/cf644e81-0df7-48c2-823c-1cec40dba2bc" 
 
     api_key = os.environ['NLU_API_KEY'] 
-
+    
     authenticator = IAMAuthenticator(api_key) 
-
+    
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator) 
-
+    
     natural_language_understanding.set_service_url(url) 
-
+    
     response = natural_language_understanding.analyze( text=text ,features=Features(sentiment=SentimentOptions(targets=[text]))).get_result() 
-
+    
     label=json.dumps(response, indent=2) 
 
     label = response['sentiment']['document']['label'] 
