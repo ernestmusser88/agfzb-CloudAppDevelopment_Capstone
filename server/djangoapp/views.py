@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
@@ -77,9 +78,10 @@ def get_dealerships(request):
     if request.method == "GET":
         context = {}
         
-        url = "https://us-east.functions.appdomain.cloud/api/v1/web/534db75c-8c0c-446b-9d45-b9d112b32bb4/dealership/get-dealership"
+        url = os.environ['COUCH_getDealers_URL'] 
         # Get dealers from the URL
-        dealerships = get_dealers_from_cf(url)
+        #dealerships = get_dealers_from_cf(url)
+        dealerships = get_dealers_from_cf(url, id = 0)
         # Return a list of dealer short name
         context['dealership_list'] = dealerships
 
@@ -91,11 +93,14 @@ def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         context = {}
 
-        url = "https://us-east.functions.appdomain.cloud/api/v1/web/534db75c-8c0c-446b-9d45-b9d112b32bb4/dealership/get-review"
-        # Get reviews from the URL
+        url = os.environ['COUCH_getReviews_URL'] 
         reviews = get_dealer_reviews_from_cf(url, id=dealer_id)
 
+        url = os.environ['COUCH_getDealers_URL'] 
+        dealership = get_dealers_from_cf(url, id=dealer_id)
+        
         context['reviews'] = reviews
+        context['dealership'] = dealership
         
         return render(request, 'djangoapp/dealer_details.html', context)
         #return HttpResponse(dealer_reviews)
@@ -107,15 +112,15 @@ def add_review(request, dealer_id):
 
     #if request.user.is_authenticated():    
         
-    url = "https://us-east.functions.appdomain.cloud/api/v1/web/534db75c-8c0c-446b-9d45-b9d112b32bb4/dealership/post-review"
+    url = os.environ['COUCH_postReview_URL']
 
     review["time"] = datetime.utcnow().isoformat()
     review["car_make"] = "Subaru"
-    review["car_model"] = "Impreza"
+    review["car_model"] = "Outback"
     review["purchase_date"] = "02/16/2021"
-    review["name"] = "Steve"
+    review["name"] = "Ernest"
     review["dealership"] = 1
-    review["review"] = "Lots of room for tools and Beef"
+    review["review"] = "Why write a review I cant read?"
     json_payload["review"] = review
         
     response = post_request(url, json_payload)
