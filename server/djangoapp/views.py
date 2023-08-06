@@ -101,7 +101,6 @@ def get_dealer_details(request, dealer_id):
         
         context['reviews'] = reviews
         context['dealership'] = dealership
-        
         return render(request, 'djangoapp/dealer_details.html', context)
         #return HttpResponse(dealer_reviews)
 

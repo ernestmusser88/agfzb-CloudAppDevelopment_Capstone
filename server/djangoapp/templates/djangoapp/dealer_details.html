@@ -8,12 +8,6 @@
 </head>
 
 <body>
-
-    {% if user.is_authenticated %}
-        <div><p class="h1">Click Here to Leave a Review!</p></div>
-    {% else %}
-        <div><p class="h1">Login to Leave a Review!</p></div>
-    {% endif %}
     {% for dealer_obj in dealership %}
         <div><p class="h1">Reviews for {{dealer_obj.full_name}}</p></div>
     {% endfor %}
