@@ -109,20 +109,22 @@ def add_review(request, dealer_id):
     review = {}
     json_payload = {}
 
-    #if request.user.is_authenticated():    
-        
-    url = os.environ['COUCH_postReview_URL']
+    context = {}
+    if request.method == 'GET':
+        return render(request, 'djangoapp/registration.html', context)   
+    elif request.method == 'POST':    
+        url = os.environ['COUCH_postReview_URL']
 
-    review["time"] = datetime.utcnow().isoformat()
-    review["car_make"] = "Subaru"
-    review["car_model"] = "Outback"
-    review["purchase_date"] = "02/16/2021"
-    review["name"] = "Ernest"
-    review["dealership"] = 1
-    review["review"] = "Why write a review I cant read?"
-    json_payload["review"] = review
-        
-    response = post_request(url, json_payload)
+        review["time"] = datetime.utcnow().isoformat()
+        review["car_make"] = "Subaru"
+        review["car_model"] = "Outback"
+        review["purchase_date"] = "02/16/2021"
+        review["name"] = "Ernest"
+        review["dealership"] = 1
+        review["review"] = "Why write a review I cant read?"
+        json_payload["review"] = review
 
-    return HttpResponse(response)
+        #response = post_request(url, json_payload)
+
+        return HttpResponse(200)
 # ...

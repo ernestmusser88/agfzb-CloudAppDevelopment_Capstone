@@ -8,9 +8,21 @@
 </head>
 
 <body>
-    {% for dealer_obj in dealership %}
-        <div><p class="h1">Reviews for {{dealer_obj.full_name}}</p></div>
-    {% endfor %}
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    {% for dealer_obj in dealership %}
+                        <div><a href="{% url 'djangoapp:add_review/2' %}"><p class="h1">Reviews for {{dealer_obj.full_name}}</p></a></div>
+                    {% endfor %}
+                {% else %}
+                    {% for dealer_obj in dealership %}
+                        <div><p class="h1">Reviews for {{dealer_obj.full_name}}</p></div>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
     <div class="card-columns">
         {% for review_obj in reviews %}
             <div class="card">
