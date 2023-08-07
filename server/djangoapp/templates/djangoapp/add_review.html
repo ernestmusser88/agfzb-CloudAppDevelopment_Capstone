@@ -17,7 +17,8 @@
         {% endfor %}
     </nav>
     <form action="{% url 'djangoapp:add_review' dealer_id%}" method="post">
-    <div class="container">
+    <div class="container -fluid" >
+        {% csrf_token %}
         <div class="row form-group">
             <label for="content"><b>Enter your review content below:</b></label>
             <textarea class="form-control" id="content" name="content" rows="2" required>Enter review here.</textarea>            

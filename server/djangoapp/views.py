@@ -127,16 +127,20 @@ def add_review(request, dealer_id):
             json_payload = {}    
             url = os.environ['COUCH_postReview_URL']
 
-            review["time"] = datetime.utcnow().isoformat()
-            review["car_make"] = "Subaru"
-            review["car_model"] = "Outback"
-            review["purchase_date"] = "02/16/2021"
-            review["name"] = "Ernest"
-            review["dealership"] = 1
-            review["review"] = "Why write a review I cant read?"
-            json_payload["review"] = review
+            purchase_check = request.POST.get('purchasecheck')
+            if purchase_check:
+                review["purchasecheck"] = True
+            else:
+                review["purchasecheck"] = False
 
-            print(request)
+            review["time"] = datetime.utcnow().isoformat()
+            review["car_model"] = request.POST["car"]
+            review["purchase_date"] = request.POST["purchasedate"]
+            review["dealership"] = dealer_id
+            review["review"] = request.POST["content"]
+
+            json_payload["review"] = review
+            print(review)
             #response = post_request(url, json_payload)
 
             return HttpResponse(200)
