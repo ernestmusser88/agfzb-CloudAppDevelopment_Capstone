@@ -13,7 +13,8 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                     {% for dealer_obj in dealership %}
-                        <div><a href="{% url 'djangoapp:add_review/2' %}"><p class="h1">Reviews for {{dealer_obj.full_name}}</p></a></div>
+                        <div><p class="h1">Reviews for {{dealer_obj.full_name}}</p></div>
+                        <div><a href="{% url 'djangoapp:add_review' dealer_obj.id %}" method="get"><p class="h2">Add Review</p></a></div>
                     {% endfor %}
                 {% else %}
                     {% for dealer_obj in dealership %}

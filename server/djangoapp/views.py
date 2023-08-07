@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarDealer, DealerReview
+from .models import CarDealer, DealerReview, CarMake, CarModel
 from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -101,6 +101,7 @@ def get_dealer_details(request, dealer_id):
         
         context['reviews'] = reviews
         context['dealership'] = dealership
+
         return render(request, 'djangoapp/dealer_details.html', context)
         #return HttpResponse(dealer_reviews)
 
@@ -111,7 +112,14 @@ def add_review(request, dealer_id):
 
     context = {}
     if request.method == 'GET':
-        return render(request, 'djangoapp/registration.html', context)   
+        
+        url = os.environ['COUCH_getDealers_URL'] 
+        dealership = get_dealers_from_cf(url, id=dealer_id)
+
+        context['dealership'] = dealership
+        context['dealer_id'] = dealer_id
+
+        return render(request, 'djangoapp/add_review.html', context)   
     elif request.method == 'POST':    
         url = os.environ['COUCH_postReview_URL']
 
