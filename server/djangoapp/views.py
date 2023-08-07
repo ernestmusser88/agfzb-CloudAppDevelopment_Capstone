@@ -136,6 +136,7 @@ def add_review(request, dealer_id):
             review["review"] = "Why write a review I cant read?"
             json_payload["review"] = review
 
+            print(request)
             #response = post_request(url, json_payload)
 
             return HttpResponse(200)
