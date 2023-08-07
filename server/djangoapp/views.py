@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarDealer, DealerReview, CarMake, CarModel
+from .models import CarDealer, DealerReview, CarModel, CarMake
 from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -107,32 +107,38 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
-    review = {}
-    json_payload = {}
+    user = request.user
+    
+    if user.is_authenticated:
+        if request.method == 'GET':
+            context = {}
 
-    context = {}
-    if request.method == 'GET':
-        
-        url = os.environ['COUCH_getDealers_URL'] 
-        dealership = get_dealers_from_cf(url, id=dealer_id)
+            url = os.environ['COUCH_getDealers_URL'] 
+            dealership = get_dealers_from_cf(url, id=dealer_id)
+            cars = CarModel.objects.filter(id=dealer_id)
 
-        context['dealership'] = dealership
-        context['dealer_id'] = dealer_id
+            context['dealership'] = dealership
+            context['dealer_id'] = dealer_id
+            context['cars'] = cars
 
-        return render(request, 'djangoapp/add_review.html', context)   
-    elif request.method == 'POST':    
-        url = os.environ['COUCH_postReview_URL']
+            return render(request, 'djangoapp/add_review.html', context)   
+        elif request.method == 'POST':
+            review = {}
+            json_payload = {}    
+            url = os.environ['COUCH_postReview_URL']
 
-        review["time"] = datetime.utcnow().isoformat()
-        review["car_make"] = "Subaru"
-        review["car_model"] = "Outback"
-        review["purchase_date"] = "02/16/2021"
-        review["name"] = "Ernest"
-        review["dealership"] = 1
-        review["review"] = "Why write a review I cant read?"
-        json_payload["review"] = review
+            review["time"] = datetime.utcnow().isoformat()
+            review["car_make"] = "Subaru"
+            review["car_model"] = "Outback"
+            review["purchase_date"] = "02/16/2021"
+            review["name"] = "Ernest"
+            review["dealership"] = 1
+            review["review"] = "Why write a review I cant read?"
+            json_payload["review"] = review
 
-        #response = post_request(url, json_payload)
+            #response = post_request(url, json_payload)
 
-        return HttpResponse(200)
+            return HttpResponse(200)
+    else:
+        return HttpResponse(403)
 # ...
