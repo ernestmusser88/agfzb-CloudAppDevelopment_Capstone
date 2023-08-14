@@ -108,6 +108,8 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
     user = request.user
+    #dealer_id = kwargs["dealer_id"]
+
     
     if user.is_authenticated:
         if request.method == 'GET':
@@ -115,21 +117,25 @@ def add_review(request, dealer_id):
 
             url = os.environ['COUCH_getDealers_URL'] 
             dealership = get_dealers_from_cf(url, id=dealer_id)
+            
+            dealer_name =' '.join([dealer.full_name for dealer in dealership])
+            
             cars = CarModel.objects.filter(dealerID=dealer_id)
+
             context['dealership'] = dealership
             context['dealer_id'] = dealer_id
-
+            context['dealer_name'] = dealer_name
             context['cars'] = cars
 
             return render(request, 'djangoapp/add_review.html', context)   
         elif request.method == 'POST':
             review = {}
             json_payload = {}
-            dealership = {}
-            
-            url = os.environ['COUCH_getDealers_URL'] 
-            dealerships = get_dealers_from_cf(url, id=dealer_id)
 
+            url = os.environ['COUCH_getDealers_URL'] 
+            dealership = get_dealers_from_cf(url, id=dealer_id)
+            
+            dealer_name =' '.join([dealer.full_name for dealer in dealership])
 
             url = os.environ['COUCH_postReview_URL']
             purchase = request.POST.get('purchasecheck')
@@ -138,7 +144,7 @@ def add_review(request, dealer_id):
             else:
                 review["purchase"] = False
 
-            #review["name"] = dealership["name"]
+            review["name"] = dealer_name
             review["time"] = datetime.utcnow().isoformat()
             review["car_model"] = request.POST["car"]
             review["purchase_date"] = request.POST["purchasedate"]
@@ -147,9 +153,10 @@ def add_review(request, dealer_id):
 
             json_payload["review"] = review
             print(review)
-            #response = post_request(url, json_payload)
+            response = post_request(url, json_payload)
 
-            return HttpResponse(200)
+            
+            return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
     else:
         return HttpResponse(403)
 # ...
