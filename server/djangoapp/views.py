@@ -115,24 +115,30 @@ def add_review(request, dealer_id):
 
             url = os.environ['COUCH_getDealers_URL'] 
             dealership = get_dealers_from_cf(url, id=dealer_id)
-            cars = CarModel.objects.filter(id=dealer_id)
-
+            cars = CarModel.objects.filter(dealerID=dealer_id)
             context['dealership'] = dealership
             context['dealer_id'] = dealer_id
+
             context['cars'] = cars
 
             return render(request, 'djangoapp/add_review.html', context)   
         elif request.method == 'POST':
             review = {}
-            json_payload = {}    
+            json_payload = {}
+            dealership = {}
+            
+            url = os.environ['COUCH_getDealers_URL'] 
+            dealerships = get_dealers_from_cf(url, id=dealer_id)
+
+
             url = os.environ['COUCH_postReview_URL']
-
-            purchase_check = request.POST.get('purchasecheck')
-            if purchase_check:
-                review["purchasecheck"] = True
+            purchase = request.POST.get('purchasecheck')
+            if purchase:
+                review["purchase"] = True
             else:
-                review["purchasecheck"] = False
+                review["purchase"] = False
 
+            #review["name"] = dealership["name"]
             review["time"] = datetime.utcnow().isoformat()
             review["car_model"] = request.POST["car"]
             review["purchase_date"] = request.POST["purchasedate"]
