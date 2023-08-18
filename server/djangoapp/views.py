@@ -144,11 +144,13 @@ def add_review(request, dealer_id):
             else:
                 review["purchase"] = False
 
-            
-            review["car_model"] = request.POST["car"]
-            print(review["car_model"])
+            car = request.POST["car"]
+            car = car.split('-')
+            review["car_model"] = car[0]
+            review["car_make"] = car[1]
+            review["car_year"] = car[2]
 
-            review["name"] = dealer_name
+            review["name"] = user.username
             review["time"] = datetime.utcnow().isoformat()
             review["purchase_date"] = request.POST["purchasedate"]
             review["dealership"] = dealer_id
@@ -156,7 +158,7 @@ def add_review(request, dealer_id):
 
             json_payload["review"] = review
 
-            #response = post_request(url, json_payload)
+            response = post_request(url, json_payload)
 
             
             return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
